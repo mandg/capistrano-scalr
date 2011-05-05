@@ -38,11 +38,11 @@ Capistrano::Configuration.instance(:must_exist).load do
       if (gateway_type == 'centos')
         hosts_cmd = 'find /etc/scalr/private.d/hosts | cut -d"/" -f6,7 | grep "/"'
       elsif (gateway_type == 'ubuntu')
-        hosts_cmd = 'find /etc/aws/hosts | cut -d"/" -f5,6 | grep "/"'
+        hosts_cmd = 'find /etc/scalr/private.d/hosts | cut -d/ -f6,7 | grep /'
       else
         abort "You must specify a gateway type"
       end
-      run hosts_cmd, :pty => true do |ch, stream, out| 
+      sudo hosts_cmd, :pty => true do |ch, stream, out| 
         next if out.chomp == '' 
         logger.info out.sub(/\//,' ') 
         out.split("\r\n").each do |host| 
