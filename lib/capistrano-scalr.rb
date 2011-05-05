@@ -59,7 +59,11 @@ Capistrano::Configuration.instance(:must_exist).load do
     end 
   end 
 
-  scalr.enum
+  if exists?(:stages)
+    on :start, "multistage:ensure"
+  end
+  
+  #scalr.enum
   ###
   
   # Gem shouldn't set the roles
