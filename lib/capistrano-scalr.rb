@@ -60,7 +60,15 @@ Capistrano::Configuration.instance(:must_exist).load do
   end 
 
   if exists?(:stages)
-    on :start, "multistage:ensure"
+    on :load do
+      if stages.include?(ARGV.first)
+        # Execute the specified stage so that recipes required in stage can contribute to task list
+        find_and_execute_task(ARGV.first)
+      else
+        # Execute the default stage so that recipes required in stage can contribute tasks
+        find_and_execute_task(default_stage) if exists?(:default_stage)
+      end
+    end
   end
   
   on :start, "scalr:enum"
